@@ -7,12 +7,19 @@ import { HiOutlinePhone, HiOutlineMail } from "react-icons/hi";
 import { AiFillHome } from "react-icons/ai";
 import { MdExplore, MdContactPage } from "react-icons/md";
 
+import { RiFlightLandFill } from "react-icons/ri";
+import { MdOutlineFlight } from "react-icons/md";
+import { RiFlightTakeoffFill } from "react-icons/ri";
+
+
 import recipe1 from "./assets/recipe1.jpg";
 import recipe2 from "./assets/recipe2.jpg";
 import recipe3 from "./assets/recipe3.jpg";
 import recipe4 from "./assets/recipe4.jpg";
 import recipe5 from "./assets/recipe5.jpg";
 import recipe6 from "./assets/recipe6.jpg";
+
+import ticket1 from "./assets/ticket1.jpg";
 
 import payment1 from "./assets/payment1.png";
 import payment2 from "./assets/payment2.png";
@@ -21,47 +28,49 @@ import payment4 from "./assets/payment4.png";
 
 export const heroIcons = [
   <CiBurger />,
-  <FaIceCream />,
-  <GiCakeSlice />,
   <GiBowlOfRice />,
+  <RiFlightTakeoffFill />,
+  <RiFlightLandFill />,
+ 
+  
 ];
 
 export const recipes = [
   {
     id: 1,
-    image: recipe1,
-    name: "Recipe Name",
-    price: "$20",
+    image: ticket1,
+    name: "Ticket Name",
+    price: "$2000",
   },
   {
     id: 2,
-    image: recipe2,
-    name: "Recipe Name",
-    price: "$13",
+    image: ticket1,
+    name: "Ticket Name",
+    price: "$1300",
   },
   {
     id: 3,
-    image: recipe3,
-    name: "Recipe Name",
-    price: "$17",
+    image: ticket1,
+    name: "Ticket Name",
+    price: "$1800",
   },
   {
     id: 4,
-    image: recipe4,
-    name: "Recipe Name",
-    price: "$22",
+    image: ticket1,
+    name: "Ticket Name",
+    price: "$2200",
   },
   {
     id: 5,
-    image: recipe5,
-    name: "Recipe Name",
-    price: "$14",
+    image: ticket1,
+    name: "Ticket Name",
+    price: "$1400",
   },
   {
     id: 6,
-    image: recipe6,
-    name: "Recipe Name",
-    price: "$20",
+    image: ticket1,
+    name: "Ticket Name",
+    price: "$2000",
   },
 ];
 
@@ -70,17 +79,17 @@ export const footerContacts = [
   {
     id: 1,
     icon: <HiOutlinePhone />,
-    text: "+959-883-271-929",
+    text: "+1 917-969-9903",
   },
   {
     id: 2,
     icon: <HiOutlineMail />,
-    text: "abee2002@gmail.com",
+    text: "yw4554@nyu.edu",
   },
   {
     id: 3,
     icon: <BiMap />,
-    text: "16 Road TharkayTha,Yangon",
+    text: "Champaign, Urbana",
   },
 ];
 
@@ -99,8 +108,8 @@ export const mainMenu = [
   },
   {
     id: 3,
-    href: "recipe",
-    text: "Recipe",
+    href: "ticket",
+    text: "Ticket",
     icon: <GiBowlOfRice />,
   },
   {
@@ -111,6 +120,6 @@ export const mainMenu = [
   },
 ];
 
-export const explores = ["Drinks", "Burger", "Salad", "Breakfast", "Dinner"];
+export const explores = ["Tickets", "Service", "Price", "Aftersales"];
 
 export const payements = [payment1, payment2, payment3, payment4];

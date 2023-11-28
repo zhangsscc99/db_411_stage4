@@ -18,9 +18,9 @@ const Header = () => {
     >
       <nav className="relative container mx-auto flex items-center justify-between py-4 px-2">
         <div className="">
-          <h4 className="text-xl font-semibold">Taste</h4>
+          <h4 className="text-xl font-semibold">Ticket Booking</h4>
           <span className="text-[0.65rem] font-bold opacity-70">
-            Restaurant && BBQ
+            Cheap & Convenient
           </span>
         </div>
         <div className="cursor-pointer flex items-center justify-center w-10 h-12 bg-black rounded-t-xl rounded-br-3xl relative">

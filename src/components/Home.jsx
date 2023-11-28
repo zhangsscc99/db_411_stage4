@@ -1,5 +1,6 @@
 import React from "react";
 import hero from "../assets/hero.png";
+import ticket1 from "../assets/ticket1.jpg";
 import { FaArrowRight } from "react-icons/fa";
 import { heroIcons } from "../Data";
 
@@ -11,10 +12,10 @@ const Home = () => {
     >
       <div className="flex flex-col items-start gap-10">
         <div className="sm:text-[2.5rem] text-[1.8rem] font-bold">
-          Delicious <br /> Food is Waiting <br /> For you
+          Convenient- <br /> One click to book  <br /> your ticket
         </div>
         <div className="btn">
-          <a href="#">View Menu</a>
+          <a href="#">View All Tickets</a>
           <FaArrowRight />
         </div>
         <div className="flex md:gap-6 gap-2">
@@ -31,7 +32,7 @@ const Home = () => {
         </div>
       </div>
       <div className="min-w-[200px] justify-self-center md:w-[600px]">
-        <img src={hero} alt="" />
+        <img src={ticket1} alt="" />
       </div>
     </div>
   );

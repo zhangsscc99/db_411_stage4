@@ -6,7 +6,7 @@ const Recipe = () => {
     <div className="section" id="recipe">
       <div className="flex flex-col items-center">
         <div className="text-3xl text-center font-bold mb-16">
-          Hot selling Recipe
+          Hot selling Tickets
         </div>
         <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-16">
           {recipes.map((recipe) => {
@@ -27,9 +27,7 @@ const Recipe = () => {
                   </div>
                 </div>
                 <p className="text-[0.85rem] opacity-70 mb-4">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Expedita hic excepturi laudantium. Doloremque eveniet
-                  provident quo nihil ipsum?
+                  
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-semibold">{recipe.price}</span>
@@ -39,7 +37,7 @@ const Recipe = () => {
             );
           })}
         </div>
-        <div className="btn cursor-pointer">View All Recipes</div>
+        <div className="btn cursor-pointer">View All Tickets</div>
       </div>
     </div>
   );
