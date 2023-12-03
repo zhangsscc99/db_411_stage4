@@ -15,11 +15,16 @@ app.use(bodyParser.json())
 
 // 设置数据库连接
 const db = mysql.createConnection({
-  host: 'localhost',  // 数据库地址
-  user: 'peterwang',  // 数据库用户
+  host: '34.66.97.248',  // Google Cloud SQL 实例的公共 IP 地址
+  user: 'root',           // 数据库用户名
   password: 'peterking',  // 数据库密码
-  port: 3306,
-  database: 'PeterKing'  // 数据库名
+  // database: 'cs411',      // 数据库名，根据实例名称推断
+  port: 3306  
+  // host: '35.226.124.117',  // 数据库地址
+  // user: 'root',  // 数据库用户
+  // password: 'test1234',  // 数据库密码
+  // port: 3306
+  // //database: 'cs411-gcp-instance'  // 数据库名
 });
 
 // 连接数据库
@@ -28,7 +33,15 @@ const db = mysql.createConnection({
 //   console.log('Database connected successfully.');
 // });
 
-db.connect;
+// db.connect;
+db.connect(error => {
+  if (error) {
+    console.error('Error connecting to the database:', error);
+    return;
+  }
+  console.log('Database connected successfully.');
+});
+
 const sql = 'select * from blogs';
 
 
