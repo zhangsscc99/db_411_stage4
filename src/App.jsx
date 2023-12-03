@@ -18,6 +18,7 @@ const App = () => {
       <NavIcon />
       <Home />
       <About />
+      <DataFetchingComponent />
       <Login />
       <FlightRankings />
       <AlternativeFlights />
