@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import FlightRankings from "./components/FlightRankings";
 import AlternativeFlights from "./components/AlternativeFlight";
 import UpdateFlight from "./components/UpdateFlight";
+import ServerMessage from "./components/ServerMessage";
 
 const App = () => {
   return (
@@ -18,7 +19,7 @@ const App = () => {
       <NavIcon />
       <Home />
       <About />
-      <DataFetchingComponent />
+      <ServerMessage />
       <Login />
       <FlightRankings />
       <AlternativeFlights />
