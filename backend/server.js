@@ -225,10 +225,146 @@ app.post('/api/find-alternative-flights', (req, res) => {
       res.json(results);
     }
   });
-  
+
 });
 
 
+
+
+// Route 1: Rank by average delay length
+app.get('/api/rank-by-average-delay', (req, res) => {
+  const sql = `
+    SELECT 
+      a.AirlineName,
+      AVG(COALESCE(f.DelayLength, 0)) as AverageDelay
+    FROM 
+      cs_411.Airline a
+    LEFT JOIN 
+      cs_411.Flight f ON a.AirlineID = f.AirlineID
+    GROUP BY 
+      a.AirlineName
+    ORDER BY 
+      AverageDelay DESC;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Route 2: Rank by Percentage of Cancelled Flights
+app.get('/api/rank-by-cancelled-flights', (req, res) => {
+  const sql = `
+    SELECT 
+      a.AirlineName,
+      a.AirlineID,
+      COUNT(f.FlightID) as TotalFlights,
+      (SELECT COUNT(*) FROM cs_411.Flight WHERE AirlineID = a.AirlineID AND Cancelled = 1) as CancelledFlights,
+      (SELECT COUNT(*) FROM cs_411.Flight WHERE AirlineID = a.AirlineID AND Cancelled = 1) / COUNT(f.FlightID) * 100 as CancelledPercentage
+    FROM 
+      cs_411.Airline a
+    LEFT JOIN 
+      cs_411.Flight f ON a.AirlineID = f.AirlineID
+    GROUP BY 
+      a.AirlineName, a.AirlineID
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
+
+
+// Route 3: Rank by Flight frequency
+app.get('/api/rank-by-flight-frequency', (req, res) => {
+  const sql = `
+    SELECT 
+      a.AirlineName,
+      COUNT(f.FlightID) as TotalFlights
+    FROM 
+      cs_411.Airline a
+    LEFT JOIN 
+      cs_411.Flight f ON a.AirlineID = f.AirlineID
+    GROUP BY 
+      a.AirlineName
+    ORDER BY 
+      TotalFlights DESC;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Route 4: Rank by WeatherDelays
+app.get('/api/rank-by-weather-delays', (req, res) => {
+  const sql = `
+    SELECT 
+      a.AirlineName,
+      SUM(CASE WHEN f.WeatherDelay > 0 THEN 1 ELSE 0 END) as WeatherDelays
+    FROM 
+      cs_411.Airline a
+    LEFT JOIN 
+      cs_411.Flight f ON a.AirlineID = f.AirlineID
+    GROUP BY 
+      a.AirlineName
+    ORDER BY 
+      WeatherDelays DESC;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
+// Route 5: Rank by AirlineDelay
+app.get('/api/rank-by-airline-delays', (req, res) => {
+  const sql = `
+    SELECT 
+      a.AirlineName,
+      SUM(CASE WHEN f.AirlineDelay > 0 THEN 1 ELSE 0 END) as AirlineDelays
+    FROM 
+      cs_411.Airline a
+    LEFT JOIN 
+      cs_411.Flight f ON a.AirlineID = f.AirlineID
+    GROUP BY 
+      a.AirlineName
+    ORDER BY 
+      AirlineDelays DESC;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 
 
