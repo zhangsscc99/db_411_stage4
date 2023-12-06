@@ -147,93 +147,89 @@ app.get('/api/get-user-reservation-info', (req, res) => {
 
 // 路由：获取用户和预订信息
 app.post('/api/login-and-find-reservation', (req, res) => {
-  const { userId, flightId, bookingId } = req.body;
+  const { userId, password, bookingId } = req.body;
   const sql = `
-    SELECT
-      f.FlightID,
-      a.AirportName,
-      AVG(f.DelayLength) AS AvgDelayLength,
-      GROUP_CONCAT(DISTINCT f.DelayReason) AS DelayReason
-    FROM
-      Reservation r
-    INNER JOIN
-      Flight f ON r.FlightID = f.FlightID
-    INNER JOIN
-      Airport a ON f.DepartureAirportID = a.AirportID
-    WHERE
-      r.UserID = ? AND r.FlightID = ? AND r.BookingID = ?`;
-  
 
-   
+  SELECT
+  f.FlightID,
+  a.AirportName,
+  AVG(f.DelayLength) AS AvgDelayLength,
+  sum(f.AirSystemDelay) as total_AirSystemDelay,
+  sum(f.SecurityDelay) as total_SecurityDelay,
+  sum(f.AirlineDelay) as total_AirlineDelay,
+  sum(f.LateAircraftDelay) as total_LateAircraftDelay,
+  sum(f.WeatherDelay) as total_WeatherDelay
+FROM
+  cs_411.User as u
+  JOIN
+  cs_411.Reservation as r ON u.UserId = r.UserId
+  JOIN
+  cs_411.Flight as f 
+  ON r.FlightID = f.FlightID
+  join
+  cs_411.Airport as a on 
+a.AirportID = f.DepartureAirportID 
+WHERE
+  u.UserID = ? AND u.Password = ?  
+  AND r.BookingID = ?
+group by f.FlightID`;
 
-  // 使用数据库连接执行 SQL 查询
-  db.query(sql, [userId, flightId, bookingId], (error, results) => {
-    if (error) {
-      console.error('Error executing SQL query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+
+
+
+  db.query(sql, [userId, password, bookingId], (err, result) => {
+    if (err) {
+      console.error('Error executing query: ' + err);
+      res.status(500).json({ error: 'Database error' });
     } else {
-      if (results.length === 0) {
-        // 如果没有找到匹配的数据
-        res.status(404).json({ error: 'No matching data found' });
-      } else {
-        // 返回查询结果
-        res.json(results);
-      }
+      res.json(result);
     }
   });
 });
 
 
-// // 路由处理用户登录和查询预订信息
-// app.post('/api/login-and-find-reservation', (req, res) => {
-//   // 从请求体中提取数据
-//   const { userId, password, bookingId } = req.body;
+// 处理POST请求
+app.post('/api/find-alternative-flights', (req, res) => {
+  const { FlightID, DepartureAirportID, DestinationAirportID, DepartureTime } = req.body;
 
-//   // 验证用户身份的 SQL 语句
-//   const validateUserSql = 'SELECT UserId FROM cs_411.User WHERE UserId = ? AND Password = ?';
+  // 执行SQL查询
+  const sql = `
+    SELECT 
+      alt_flight.FlightID AS AlternativeFlightID,
+      alt_flight.DepartureTime AS AlternativeDepartureTime,
+      alt_flight.ArrivalTime AS AlternativeArrivalTime,
+      alt_airline.AirlineName AS AlternativeAirline
+    FROM
+      cs_411.User u
+    JOIN
+      cs_411.Reservation r ON u.UserId = r.UserID
+    JOIN
+      cs_411.Flight original_flight ON r.FlightID = original_flight.FlightID
+    JOIN
+      cs_411.Flight alt_flight ON original_flight.DepartureAirportID = alt_flight.DepartureAirportID
+                             AND original_flight.DestinationAirportID = alt_flight.DestinationAirportID
+                             AND original_flight.FlightID != alt_flight.FlightID
+    JOIN
+      cs_411.Airline alt_airline ON alt_flight.AirlineID = alt_airline.AirlineID
+    WHERE 
+      original_flight.FlightID = ? 
+      AND original_flight.DepartureAirportID = ? 
+      AND original_flight.DestinationAirportID = ? 
+      AND original_flight.DepartureTime = ?`;
 
-//   // 查询预订信息的 SQL 语句
-//   const findReservationSql = `
-//     SELECT
-//       r.FlightID,
-//       a.AirportName,
-//       AVG(f.DelayLength) AS AvgDelayLength,
-//       CASE
-//         WHEN f.AirSystemDelay > 0 THEN 'AirSystemDelay'
-//         WHEN f.SecurityDelay > 0 THEN 'SecurityDelay'
-//         WHEN f.AirlineDelay > 0 THEN 'AirlineDelay'
-//         WHEN f.LateAircraftDelay > 0 THEN 'LateAircraftDelay'
-//         WHEN f.WeatherDelay > 0 THEN 'WeatherDelay'
-//         ELSE 'None'
-//       END AS DelayReason
-//     FROM cs_411.Reservation r
-//     INNER JOIN cs_411.Flight f ON r.FlightID = f.FlightID
-//     INNER JOIN cs_411.Airport a ON f.DepartureAirportID = a.AirportID
-//     WHERE r.BookingID = ?
-//     GROUP BY r.FlightID;
-//   `;
+  db.query(sql, [FlightID, DepartureAirportID, DestinationAirportID, DepartureTime], (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results);
+    }
+  });
+  
+});
 
-//   // 首先验证用户身份
-//   db.query(validateUserSql, [userId, password], (userErr, userResults) => {
-//     if (userErr || userResults.length === 0) {
-//       // 发生错误或未找到用户
-//       res.status(401).json({ error: 'Unauthorized: Incorrect UserId or Password' });
-//       return;
-//     }
 
-//     // 用户验证成功，查询预订信息
-//     db.query(findReservationSql, [bookingId], (reservationErr, reservationResults) => {
-//       if (reservationErr) {
-//         // 查询过程中发生错误
-//         res.status(500).json({ error: 'Error fetching reservation details' });
-//         return;
-//       }
 
-//       // 返回查询结果
-//       res.json(reservationResults);
-//     });
-//   });
-// });
 
 
 // ...
