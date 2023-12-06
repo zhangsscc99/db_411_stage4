@@ -11,20 +11,23 @@ import FlightRankings from "./components/FlightRankings";
 import AlternativeFlights from "./components/AlternativeFlight";
 import UpdateFlight from "./components/UpdateFlight";
 import ServerMessage from "./components/ServerMessage";
+import RegisterUser from "./components/RegisterUser";
+import DeleteUser from "./components/DeleteUser";
 
 const App = () => {
   return (
     <div className="font-poppins bg-back">
       <Header />
-      <NavIcon />
-      <Home />
-      <About />
-      <ServerMessage />
+      
+      
+      
+      <RegisterUser />
+      <DeleteUser />
       <Login />
       <FlightRankings />
       <AlternativeFlights />
       <UpdateFlight />
-      <Recipe />
+      
       <Contact />
       <Footer />
     </div>

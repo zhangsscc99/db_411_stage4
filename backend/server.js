@@ -417,6 +417,86 @@ app.post('/api/update-flight-delay', (req, res) => {
 });
 
 
+// API endpoint to delete a user
+app.delete('/api/deleteUser', (req, res) => {
+  const { userId, password } = req.body;
+
+  // Ensure that userId and password are provided
+  if (!userId || !password) {
+    return res.status(400).json({ error: 'UserId and Password are required' });
+  }
+
+  const deleteQuery = `
+    DELETE FROM cs_411.User
+    WHERE UserId = ? AND Password = ?;
+  `;
+
+  db.query(deleteQuery, [userId, password], (err, result) => {
+    if (err) {
+      console.error('Error deleting user:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // Check if any row is actually deleted
+      if (result.affectedRows === 0) {
+        res.status(404).json({ error: 'User not found or incorrect password' });
+      } else {
+        res.json({ message: 'User deleted successfully' });
+      }
+    }
+  });
+});
+
+
+// API endpoint to insert a new user
+// app.post('/api/insertUser', (req, res) => {
+//   const { userId, password } = req.body;
+
+//   const insertQuery = `
+//     INSERT INTO cs_411.User (UserId, Password)
+//     VALUES (?, ?)
+//   `;
+
+//   db.query(insertQuery, [userId, password], (err, result) => {
+//     if (err) {
+//       console.error('Error inserting user:', err);
+//       res.status(500).json({ error: 'Error inserting user' });
+//     } else {
+//       res.json({ message: 'User inserted successfully' });
+//     }
+//   });
+// });
+
+
+
+app.post('/api/insertUser', (req, res) => {
+  const { userId, password } = req.body;
+
+  // Ensure that userId and password are not empty
+  if (!userId || !password) {
+    return res.status(400).json({ error: 'UserId and Password are required' });
+  }
+
+  const insertQuery = `
+    INSERT INTO cs_411.User (UserId, Password)
+    VALUES (?, ?);
+  `;
+
+  db.query(insertQuery, [userId, password], (err, result) => {
+    if (err) {
+      // Handle specific error for duplicate userId
+      if (err.code === 'ER_DUP_ENTRY') {
+        res.status(409).json({ error: 'UserId already exists' });
+      } else {
+        console.error('Error inserting user:', err);
+        res.status(500).json({ error: 'Account Created Successfully!' });
+      }
+    } else {
+      res.json({ message: 'User inserted successfully' });
+    }
+  });
+});
+
+
 
 
 // ...

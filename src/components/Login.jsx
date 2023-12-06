@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 
 const Login = () => {
+  
   const [inputs, setInputs] = useState({
     userId: '',
     password: '',
@@ -11,6 +12,7 @@ const Login = () => {
   const [reservation, setReservation] = useState(null);
 
   // 处理输入字段的变化
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setInputs(prev => ({ ...prev, [name]: value }));
