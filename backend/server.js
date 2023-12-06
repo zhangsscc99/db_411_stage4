@@ -437,7 +437,7 @@ app.post('/api/update-flight-delay', (req, res) => {
   const { FlightID, NewDepartureTime, DepartureAirportID, DestinationAirportID } = req.body;
   
   // Call the stored procedure with provided parameters
-  const sql = 'CALL cs_411.AdvancedUpdateFlightDelay5(?, ?, ?, ?, @DelayDuration)';
+  const sql = 'CALL cs_411.AdvancedUpdateFlightDelay8(?, ?, ?, ?, @DelayDuration)';
   
   db.query(sql, [FlightID, NewDepartureTime, DepartureAirportID, DestinationAirportID], (err, results, fields) => {
       if (err) {
