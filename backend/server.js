@@ -366,6 +366,57 @@ app.get('/api/rank-by-airline-delays', (req, res) => {
   });
 });
 
+// stored procedure
+// API路由 - 更新航班延误信息
+// app.post('/api/update-flight-delay', (req, res) => {
+//   const { FlightID, NewDepartureTime, DepartureAirportID, DestinationAirportID } = req.body;
+
+//   // 执行存储过程来更新航班延误信息
+//   const sql = `
+//     SET @DelayDuration = 0;
+//     CALL cs_411.AdvancedUpdateFlightDelay5(?, ?, ?, ?, @DelayDuration);
+//     SELECT @DelayDuration AS DelayDuration;
+//   `;
+
+//   db.query(sql, [FlightID, NewDepartureTime, DepartureAirportID, DestinationAirportID], (err, results) => {
+//     if (err) {
+//       console.error('Error updating flight delay:', err);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     } else {
+//       const delayDuration = results[1][0].DelayDuration; // 获取存储过程返回的延误时长
+//       res.json({ DelayDuration: delayDuration });
+//     }
+//   });
+// });
+
+// API endpoint to update flight delay
+app.post('/api/update-flight-delay', (req, res) => {
+  const { FlightID, NewDepartureTime, DepartureAirportID, DestinationAirportID } = req.body;
+  
+  // Call the stored procedure with provided parameters
+  const sql = 'CALL cs_411.AdvancedUpdateFlightDelay5(?, ?, ?, ?, @DelayDuration)';
+  
+  db.query(sql, [FlightID, NewDepartureTime, DepartureAirportID, DestinationAirportID], (err, results, fields) => {
+      if (err) {
+          console.error('Error updating flight delay:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      
+      // Retrieve the output parameter value
+      db.query('SELECT @DelayDuration AS DelayDuration', (err, results) => {
+          if (err) {
+              console.error('Error fetching delay duration:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+          }
+
+          // Send the delay duration back in the response
+          const delayDuration = results[0].DelayDuration;
+          res.json({ DelayDuration: delayDuration });
+      });
+  });
+});
+
+
 
 
 // ...
