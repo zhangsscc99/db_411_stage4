@@ -188,11 +188,51 @@ group by f.FlightID`;
 });
 
 
+
+
 // 处理POST请求
+// app.post('/api/find-alternative-flights', (req, res) => {
+//   const { FlightID, DepartureAirportID, DestinationAirportID, DepartureTime } = req.body;
+
+//   // 执行SQL查询
+//   const sql = `
+//     SELECT 
+//       alt_flight.FlightID AS AlternativeFlightID,
+//       alt_flight.DepartureTime AS AlternativeDepartureTime,
+//       alt_flight.ArrivalTime AS AlternativeArrivalTime,
+//       alt_airline.AirlineName AS AlternativeAirline
+//     FROM
+//       cs_411.User u
+//     JOIN
+//       cs_411.Reservation r ON u.UserId = r.UserID
+//     JOIN
+//       cs_411.Flight original_flight ON r.FlightID = original_flight.FlightID
+//     JOIN
+//       cs_411.Flight alt_flight ON original_flight.DepartureAirportID = alt_flight.DepartureAirportID
+//                              AND original_flight.DestinationAirportID = alt_flight.DestinationAirportID
+//                              AND original_flight.FlightID != alt_flight.FlightID
+//     JOIN
+//       cs_411.Airline alt_airline ON alt_flight.AirlineID = alt_airline.AirlineID
+//     WHERE 
+//       original_flight.FlightID = ? 
+//       AND original_flight.DepartureAirportID = ? 
+//       AND original_flight.DestinationAirportID = ? 
+//       AND original_flight.DepartureTime = ?`;
+
+//   db.query(sql, [FlightID, DepartureAirportID, DestinationAirportID, DepartureTime], (err, results) => {
+//     if (err) {
+//       console.error('Error executing SQL query: ', err);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     } else {
+//       res.json(results);
+//     }
+//   });
+
+// });
+
 app.post('/api/find-alternative-flights', (req, res) => {
   const { FlightID, DepartureAirportID, DestinationAirportID, DepartureTime } = req.body;
 
-  // 执行SQL查询
   const sql = `
     SELECT 
       alt_flight.FlightID AS AlternativeFlightID,
@@ -209,13 +249,16 @@ app.post('/api/find-alternative-flights', (req, res) => {
       cs_411.Flight alt_flight ON original_flight.DepartureAirportID = alt_flight.DepartureAirportID
                              AND original_flight.DestinationAirportID = alt_flight.DestinationAirportID
                              AND original_flight.FlightID != alt_flight.FlightID
+                             AND TIMESTAMPDIFF(MINUTE, STR_TO_DATE(original_flight.DepartureTime, '%H:%i'), STR_TO_DATE(alt_flight.DepartureTime, '%H:%i')) > 0
     JOIN
       cs_411.Airline alt_airline ON alt_flight.AirlineID = alt_airline.AirlineID
     WHERE 
       original_flight.FlightID = ? 
       AND original_flight.DepartureAirportID = ? 
       AND original_flight.DestinationAirportID = ? 
-      AND original_flight.DepartureTime = ?`;
+      AND original_flight.DepartureTime = ?
+    ORDER BY TIMESTAMPDIFF(MINUTE, STR_TO_DATE(original_flight.DepartureTime, '%H:%i'), STR_TO_DATE(alt_flight.DepartureTime, '%H:%i'))
+  `;
 
   db.query(sql, [FlightID, DepartureAirportID, DestinationAirportID, DepartureTime], (err, results) => {
     if (err) {
@@ -225,8 +268,8 @@ app.post('/api/find-alternative-flights', (req, res) => {
       res.json(results);
     }
   });
-
 });
+
 
 
 
